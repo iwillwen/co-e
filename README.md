@@ -43,7 +43,41 @@ if (e.hasError('foo') && e.hasError('bar')) {
 - e.hasError([label])
 - e.error([label])
 
-#### Read more in [examples.js](https://github.com/iwillwen/co-e/blob/master/examples.js)
+Read more in [examples.js](https://github.com/iwillwen/co-e/blob/master/examples.js)
+
+### Why `co-e`?
+
+function `somethingWrong` will be called in `example.js`.
+
+#### Before
+```
+Error: Something wrong
+    at somethingWrong (/path/to/script/examples.js:5:9)
+    at GeneratorFunctionPrototype.next (native)
+    at onFulfilled (/path/to/script/node_modules/co/index.js:61:19)
+    at /path/to/script/node_modules/co/index.js:50:5
+    at co (/path/to/script/node_modules/co/index.js:49:10)
+    at toPromise (/path/to/script/node_modules/co/index.js:114:63)
+    at next (/path/to/script/node_modules/co/index.js:95:29)
+    at onFulfilled (/path/to/script/node_modules/co/index.js:65:7)
+    at /path/to/script/node_modules/co/index.js:50:5
+    at co (/path/to/script/node_modules/co/index.js:49:10)
+```
+
+#### After
+```
+Error: Something wrong
+    at somethingWrong (/path/to/script/examples.js:5:9)
+    at /path/to/script/examples.js:61:9
+    at GeneratorFunctionPrototype.next (native)
+    at onFulfilled (/path/to/script/node_modules/co/index.js:61:19)
+    at /path/to/script/node_modules/co/index.js:50:5
+    at co (/path/to/script/node_modules/co/index.js:49:10)
+    at Object.<anonymous> (/path/to/script/examples.js:60:1)
+    at Module._compile (module.js:446:26)
+    at Object.Module._extensions..js (module.js:464:10)
+    at Module.load (module.js:341:32)
+```
 
 ### Contributing
 - Fork this repo
