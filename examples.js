@@ -1,5 +1,5 @@
 var co = require('co');
-var e = require('./co-e');
+var e = require('./');
 
 function *A() {
   throw new Error('Something wrong');
