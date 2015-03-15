@@ -1,0 +1,33 @@
+{
+  "name": "co-e",
+  "version": "1.0.0",
+  "description": "Better error stack and error controlling for co and koa",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iwillwen/co-e"
+  },
+  "keywords": [
+    "co",
+    "koa",
+    "error",
+    "defer"
+  ],
+  "scripts" : {
+    "test": "mocha --harmony --reporter spec test/index.js"
+  },
+  "author": "iwillwen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iwillwen/co-e/issues"
+  },
+  "homepage": "https://github.com/iwillwen/co-e",
+  "devDependencies": {
+    "chai": "^2.1.1",
+    "co-mocha": "^1.1.0",
+    "mocha": "^2.2.1"
+  }
+}
