@@ -31,7 +31,8 @@
  * }
  */
 
-var co = require('co');
+var enabled = true;
+var enabledDefer = true;
 
 /**
  * e
@@ -44,18 +45,34 @@ function e(label, gen) {
     gen = label;
     label = '';
   }
+
+  if (!enabled) {
+    return gen;
+  }
+
   var hackErr = new Error('hack');
   hackErr.label = label;
 
-  return function(callback) {
-    co(function *() {
-      var res = yield gen;
-      callback(null, res);
-    }).catch(function(err) {
-      callback(buildError(err, hackErr));
-    });
+  return function *() {
+    try {
+      return yield gen;
+    } catch(err) {
+      throw buildError(err, hackErr);
+    }
   };
 }
+
+e.enable = function() {
+  return enabled = true;
+};
+
+e.disable = function() {
+  return enabled = false;
+};
+
+e.toggle = function() {
+  return enabled = !enabled;
+};
 
 // Build the full error stack
 function buildError(err, hackErr) {
@@ -102,21 +119,43 @@ e.defer = function(label, gen) {
     gen = label;
     label = Math.random().toString(32).substr(2);
   }
-  var hackErr = new Error('hack');
-  hackErr.label = label;
-  lastLabel = label;
 
-  return function(callback) {
-    co(function *() {
-      var res = yield gen;
-      callback(null, res);
-    }).catch(function(err) {
-      var err = buildError(err, hackErr);
-      defers[label] = err;
-      callback(null, null);
-    });
+  if (enabled) {
+    var hackErr = new Error('hack');
+    hackErr.label = label;
+    lastLabel = label;
+  }
+
+  if (!enabledDefer) {
+    return gen;
+  }
+
+  return function *() {
+    try {
+      return yield gen;
+    } catch(err) {
+      if (enabled) {
+        var _err = buildError(err, hackErr);
+        defers[label] = _err;
+      } else {
+        defers[label] = err;
+      }
+      return null;
+    }
   };
-}
+};
+
+e.defer.enable = function() {
+  return enabledDefer = true;
+};
+
+e.defer.disable = function() {
+  return enabledDefer = false;
+};
+
+e.defer.toggle = function() {
+  return enabledDefer = !enabledDefer;
+};
 
 /**
  * e.hasError

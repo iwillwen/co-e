@@ -1,7 +1,10 @@
 var e = require('../');
 
+require('co-mocha');
 var assert = require('assert');
-var should = require('chai').should();
+var chai = require('chai');
+var should = chai.should();
+var expect = chai.expect;
 
 describe('e(gen)', function() {
   it('should return the correct value', function *() {
@@ -14,7 +17,7 @@ describe('e(gen)', function() {
     try {
       yield e(somethingWrong());
     } catch(err) {
-      err.should.be.an('error');
+      expect(err instanceof Error).to.be.true;
     }
   });
 });
@@ -30,7 +33,7 @@ describe('e(label, gen)', function() {
     try {
       yield e('somethingWrong', somethingWrong());
     } catch(err) {
-      err.should.be.an('error');
+      expect(err instanceof Error).to.be.true;
     }
   });
 });
@@ -45,7 +48,7 @@ describe('e.defer(gen)', function() {
   it('should return null and defer the error', function *() {
     var value = yield e.defer(somethingWrong());
 
-    value.should.be.a('null');
+    expect(value).to.be.a('null');
   });
 
   it('should return the error that was deferred', function *() {
@@ -54,8 +57,8 @@ describe('e.defer(gen)', function() {
       var err = e.error();
     }
 
-    value.should.be.a('null');
-    err.should.be.an('error');
+    expect(value).to.be.a('null');
+    expect(err instanceof Error).to.be.true;
   });
 });
 
@@ -69,7 +72,7 @@ describe('e.defer(label, gen)', function() {
   it('should return null and defer the error', function *() {
     var value = yield e.defer('somethingWrong', somethingWrong());
 
-    value.should.be.a('null');
+    expect(value).to.be.a('null');
   });
 
   it('should return the error that was deferred', function *() {
@@ -78,8 +81,8 @@ describe('e.defer(label, gen)', function() {
       var err = e.error('somethingWrong');
     }
 
-    value.should.be.a('null');
-    err.should.be.an('error');
+    expect(value).to.be.a('null');
+    expect(err instanceof Error).to.be.true;
   });
 });
 
