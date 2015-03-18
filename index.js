@@ -107,6 +107,8 @@ function buildError(err, hackErr) {
 
 var defers = {};
 var lastLabel = null;
+var records = {};
+var lastRecordLabel = null;
 
 /**
  * e.defer
@@ -139,6 +141,10 @@ e.defer = function(label, gen) {
         defers[label] = _err;
       } else {
         defers[label] = err;
+      }
+
+      if (lastRecordLabel) {
+        records[lastRecordLabel][label] = defers[label];
       }
       return null;
     }
@@ -181,6 +187,23 @@ e.error = function(label) {
   label = label || lastLabel;
 
   return defers[label];
+};
+
+e.record = function(label) {
+  label = label || Math.random().toString(32).substr(2);
+
+  records[label] = {};
+  lastRecordLabel = label;
+};
+
+e.stop = function(label, callback) {
+  if (!callback) {
+    callback = label;
+    label = lastRecordLabel;
+  }
+  lastRecordLabel = null;
+
+  return callback(records[label]);
 };
 
 module.exports = e;
